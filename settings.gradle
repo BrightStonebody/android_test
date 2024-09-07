@@ -1,0 +1,37 @@
+//pluginManagement {
+//    repositories {
+//        google()
+//        mavenCentral()
+//        gradlePluginPortal()
+//    }
+//}
+//dependencyResolutionManagement {
+//    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+//    repositories {
+//        google()
+//        mavenCentral()
+//    }
+//}
+
+rootProject.name = "android_test"
+include ':app'
+include ':library_demo'
+
+includeBuild("plugin") {
+    dependencySubstitution {
+        /**
+         * 把根目录里的buildscript{
+         *     dependencies{
+         *         classpath "com.bytedance.tiktok:rstring-mapping-uploader:0.0.1"
+         *     }
+         * }
+         * substitute成project(":")
+         * 注意⚠️，这里的project(":")并不是指根目录（RStringMappingUploader）的":"，而是plugin这个gradle project的":"
+         */
+        substitute(module("com.demo:rename-plugin"))
+                .with(project(":rename_plugin"))
+    }
+}
+
+//include ':plugin'
+//include ':plugin:rename_plugin'
