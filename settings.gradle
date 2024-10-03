@@ -1,21 +1,4 @@
-//pluginManagement {
-//    repositories {
-//        google()
-//        mavenCentral()
-//        gradlePluginPortal()
-//    }
-//}
-//dependencyResolutionManagement {
-//    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-//    repositories {
-//        google()
-//        mavenCentral()
-//    }
-//}
-
 rootProject.name = "android_test"
-include ':app'
-include ':library_demo'
 
 includeBuild("plugin") {
     dependencySubstitution {
@@ -33,5 +16,7 @@ includeBuild("plugin") {
     }
 }
 
-//include ':plugin'
-//include ':plugin:rename_plugin'
+
+include ':app'
+include ':library_demo'
+//include ':library_demo2'

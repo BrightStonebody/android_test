@@ -3,10 +3,17 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+apply plugin: "rename_plugin"
+
+rename_plugin {
+    packageMapping = [
+            "com/demo/library_demo": "com/demo/rename/demo"
+    ]
+}
 
 android {
 //    namespace 'com.example.mylibrary'
-    compileSdkVersion 31
+    compileSdkVersion 34
 
     defaultConfig {
         minSdkVersion 24
@@ -31,10 +38,6 @@ android {
 }
 
 dependencies {
-
-    implementation 'androidx.core:core-ktx:1.7.0'
-//    implementation 'org.jetbrains.kotlin:kotlin-android-extensions'
-    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'com.google.android.material:material:1.5.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
 }

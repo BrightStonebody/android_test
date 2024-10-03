@@ -91,13 +91,17 @@ class LifecycleLogTransform : Transform() {
                 destFile.parentFile.mkdirs()
             }
 
+            val inputStream = file.inputStream()
+            val outputStream = destFile.outputStream()
             if (file.path.endsWith(".class")) {
-                destFile.outputStream().write(
-                    visit(file.inputStream().readBytes())
+                outputStream.write(
+                    visit(inputStream.readBytes())
                 )
             } else {
-                destFile.outputStream().write(file.inputStream().readBytes())
+                outputStream.write(inputStream.readBytes())
             }
+            inputStream.close()
+            outputStream.close()
         }
     }
 

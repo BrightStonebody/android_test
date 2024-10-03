@@ -7,7 +7,7 @@ import org.objectweb.asm.Opcodes
 
 //
 
-class LifecycleVisitor(cv: ClassVisitor) : ClassVisitor(Opcodes.ASM6, cv) {
+class LifecycleVisitor(cv: ClassVisitor) : ClassVisitor(Opcodes.ASM8, cv) {
 
     override fun visitMethod(
         access: Int,

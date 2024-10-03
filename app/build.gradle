@@ -2,26 +2,18 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-android-extensions'
-    id 'rename_plugin'
-}
-
-rename_plugin {
-    packageMapping = [
-        "": ""
-    ]
 }
 
 android {
-    compileSdk 31
+    compileSdkVersion 34
 
     defaultConfig {
         applicationId "com.demo.android_test"
-        minSdk 24
-        targetSdk 31
+        minSdkVersion 24
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -42,6 +34,8 @@ android {
 dependencies {
 
     implementation project(":library_demo")
-    implementation 'androidx.appcompat:appcompat:1.4.1'
+//    implementation project(":library_demo2")
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'com.google.android.material:material:1.5.0'
 
 }

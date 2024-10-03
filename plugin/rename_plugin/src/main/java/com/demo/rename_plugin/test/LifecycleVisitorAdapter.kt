@@ -11,7 +11,7 @@ class LifecycleVisitorAdapter(
     access: Int,
     name: String,
     descriptor: String
-) : AdviceAdapter(Opcodes.ASM6, methodVisitor, access, name, descriptor) {
+) : AdviceAdapter(Opcodes.ASM8, methodVisitor, access, name, descriptor) {
 
     override fun onMethodEnter() {
         super.onMethodEnter()
@@ -45,6 +45,5 @@ class LifecycleVisitorAdapter(
             false
         )
         methodVisitor.visitInsn(POP)
-
     }
 }
