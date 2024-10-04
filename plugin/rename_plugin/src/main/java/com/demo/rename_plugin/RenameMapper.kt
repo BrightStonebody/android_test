@@ -7,17 +7,17 @@ class RenameMapper(
     classMapping: Map<String, String>
 ) : Remapper() {
 
-    private val dotMapping = HashMap<String, String>()
-    private val slashMapping = HashMap<String, String>()
+    private val dotMapping = HashMap<String, String>() // com.demo.test
+    private val slashMapping = HashMap<String, String>() // com/demo/test.class
 
     init {
         for (entry in packageMapping) {
             var key = entry.key
             var value = entry.value
-            key = if (key.endsWith("/")) key else "$key/"
+            key = if (key.endsWith("/")) key else "$key/" // package匹配必须以/结尾
             value = if (value.endsWith("/")) value else "$value/"
             slashMapping[key] = value
-            key = key.replace("/", ".")
+            key = key.replace("/", ".") // package匹配必须以.结尾
             value = value.replace("/", ".")
             key = if (key.endsWith(".")) key else "$key."
             value = if (value.endsWith(".")) value else "$value."
@@ -54,7 +54,7 @@ class RenameMapper(
         println("chenlei_test mapValue $value")
 
         var value = value
-        val startWithL = value.startsWith("L")
+        val startWithL = value.startsWith("L") // Lcom/demo/test
         if (startWithL) {
             value = value.substring(1)
         }

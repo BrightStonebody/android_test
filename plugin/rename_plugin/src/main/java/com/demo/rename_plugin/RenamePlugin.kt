@@ -14,11 +14,17 @@ import java.io.File
 import java.util.jar.JarEntry
 import java.util.jar.JarInputStream
 import java.util.jar.JarOutputStream
+import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import java.util.zip.ZipOutputStream
 
 /**
- * A simple 'hello world' plugin.
+ * 使用插件
+ * rename_plugin {
+ *     packageMapping = [
+ *         "com.demo.test" to "com.demo.test2"
+ *     ]
+ * }
  */
 class RenamePlugin : Plugin<Project> {
     override fun apply(project: Project) {
@@ -61,14 +67,14 @@ class RenamePlugin : Plugin<Project> {
     private fun transformBundle(bundleFile: File, renameExtension: RenameExtension) {
         println("chenlei_test transformBundle ${bundleFile.absolutePath}")
 
-        if (bundleFile.extension == "jar") {
+        if (bundleFile.extension == "jar") { // 如果是jar文件，直接进入下一步
             bundleFile.writeBytes(
                 transformJar(
                     bundleFile.inputStream().readBytes(),
                     renameExtension
                 )
             )
-        } else if (bundleFile.extension == "aar") {
+        } else if (bundleFile.extension == "aar") { // 如果是aar文件，解压后编译所有文件，处理jar文件并覆盖重写
             val modifyEntries = HashMap<String, ByteArray>()
             ZipFile(bundleFile).use { zipInput ->
                 // 遍历修改aar中的每一个jar
@@ -86,8 +92,10 @@ class RenamePlugin : Plugin<Project> {
             ZipFile(bundleFile).use { zipInput ->
                 val byteArrayOutputStream = ByteArrayOutputStream()
                 ZipOutputStream(byteArrayOutputStream).use { outputStream ->
-                    for (entry in zipInput.entries()) {
-                        outputStream.putNextEntry(JarEntry(entry.name))
+                    for (_entry in zipInput.entries()) {
+                        val entry = _entry.clone() as ZipEntry
+                        entry.compressedSize = -1
+                        outputStream.putNextEntry(entry)
                         val modifyEntry = modifyEntries[entry.name]
                         if (modifyEntry != null) {
                             outputStream.write(modifyEntry)
@@ -137,8 +145,7 @@ class RenamePlugin : Plugin<Project> {
         }
         outputStream.close()
         inputStream.close()
-        val byteArray = bytesOutputStream.toByteArray()
-        return byteArray
+        return bytesOutputStream.toByteArray()
     }
 }
 
