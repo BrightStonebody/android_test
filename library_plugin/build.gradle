@@ -4,7 +4,8 @@ plugins {
     id 'com.google.devtools.ksp' version '1.7.21-1.0.8'
 }
 
-apply from:  "../ksp_spi/spi.gradle"
+apply from: '../ksp_spi/spi_plugin.gradle'
+apply from: '../ksp_spi/spi_host_impl.gradle'
 
 apply plugin: "rename_plugin"
 
@@ -44,6 +45,9 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'com.google.android.material:material:1.5.0'
 
+    implementation project(":library_demo")
+    implementation project(":library_demo2")
+    implementation project(":library_demo3")
 
     ksp(project(":ksp_spi:ecommerce_saas_compile"))
     implementation project(":ksp_spi:ecommerce_saas_spi_annotation")

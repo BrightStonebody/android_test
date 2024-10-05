@@ -1,0 +1,6 @@
+
+def moduleName = project.name
+
+ksp {
+    arg("module_name", moduleName)
+}

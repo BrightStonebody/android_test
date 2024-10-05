@@ -5,7 +5,7 @@ includeBuild("plugin") {
         /**
          * 把根目录里的buildscript{
          *     dependencies{
-         *         classpath "com.bytedance.tiktok:rstring-mapping-uploader:0.0.1"
+         *         classpath "xxx"
          *     }
          * }
          * substitute成project(":")
@@ -19,4 +19,8 @@ includeBuild("plugin") {
 
 include ':app'
 include ':library_demo'
-//include ':library_demo2'
+include ':library_demo2'
+include ':library_demo3'
+include ':library_plugin'
+include ':ksp_spi:ecommerce_saas_spi_annotation'
+include ":ksp_spi:ecommerce_saas_compile"

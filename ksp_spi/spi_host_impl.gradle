@@ -1,0 +1,36 @@
+
+
+def projectBuildPaths = getEcomSaasHostImplBuildPaths(project)
+def moduleName = project.name
+
+ksp {
+
+    arg("module_name", moduleName)
+    arg("ecomProject.hostImplBuildPaths", projectBuildPaths)
+
+}
+
+static def getEcomSaasHostImplBuildPaths(Project project) {
+//    if (project.name != "tt_ecommerce_saas_impl") {
+//        return ""
+//    }
+
+    def buildPaths = []
+    project.getRootProject().subprojects.forEach {
+        def path = it.buildDir.absolutePath
+//        if (it.name == "ecommerce_saas_host_api" || it.name == "tt_ecommerce_saas_impl") {
+            buildPaths.add(path)
+//        }
+    }
+
+//    def str = buildPaths.join(";")
+//    throw Exception("${buildPaths.size()} $str")
+    if (buildPaths.isEmpty()) {
+        return ""
+    }
+    return buildPaths.join(";")
+
+}
+
+
+

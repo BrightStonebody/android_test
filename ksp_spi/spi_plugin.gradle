@@ -1,0 +1,50 @@
+
+def projectBuildPaths = getEcomSaasImplBuildPaths(project)
+def moduleName = project.name
+
+ksp {
+
+    arg("module_name", moduleName)
+    arg("ecomProject.implBuildPaths", projectBuildPaths)
+
+}
+
+def getEcomSaasImplBuildPaths(Project project) {
+//    if (project.name != "ecommerce_saas_plugin") {
+//        return ""
+//    }
+
+    println("ecommerce_saas_spi ecommerce_saas_plugin start")
+
+    def buildPaths = []
+    project.getRootProject().subprojects.forEach {
+        def path = it.buildDir.absolutePath
+//        if (path.contains("ecommerce_common")
+//                || path.contains("ecommerce_business")
+//                || path.contains("ecommerce_saas")
+//                || path.contains("e_commerce_influencer")) {
+            buildPaths.add(path)
+            println("ecommerce_saas_spi ${it.name}")
+//        }
+    }
+
+//    project.getConfigurations().forEach { config ->
+//        def name = config.name.toLowerCase()
+//        println("ecommerce_saas_spi config name ${name}")
+//        if (name.contains("compileclasspath")
+//                && !name.contains("test")) {
+//            config.incoming.dependencies.forEach {
+//                depsList?.add(it.group + ":" + it.name)
+//                println("ecommerce_saas_spi dependency name ${name}")
+//            }
+//        }
+//    }
+
+    if (buildPaths.isEmpty()) {
+        return ""
+    }
+    def str = buildPaths.join(";")
+    println(str)
+    return str
+
+}
