@@ -33,7 +33,7 @@ class ServiceManagerProcessor(
 
 /**
  */
-//@AutoService(SymbolProcessorProvider::class)
+@AutoService(SymbolProcessorProvider::class)
 class ServiceManagerProcessorProvider : SymbolProcessorProvider {
 
     override fun create(

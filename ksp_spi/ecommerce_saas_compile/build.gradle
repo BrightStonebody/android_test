@@ -3,7 +3,7 @@ plugins {
 //    id 'org.jetbrains.kotlin.android'
     id 'java-gradle-plugin'
     id 'kotlin'
-//    id 'com.google.devtools.ksp' version '1.7.21-1.0.8'
+    id 'com.google.devtools.ksp' version '1.7.21-1.0.8'
 }
 
 java {
@@ -22,7 +22,7 @@ dependencies {
     implementation "com.google.devtools.ksp:symbol-processing-api:1.7.21-1.0.8"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
-//    ksp("dev.zacsweers.autoservice:auto-service-ksp:1.0.0")
+    ksp("dev.zacsweers.autoservice:auto-service-ksp:1.0.0")
     implementation("com.google.auto.service:auto-service-annotations:1.0-rc6")
     compileOnly("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.5.31")
 }
