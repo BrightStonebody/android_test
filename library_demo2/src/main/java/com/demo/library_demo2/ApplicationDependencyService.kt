@@ -10,11 +10,11 @@ class ApplicationDependencyService: IApplicationDependencyService {
 
 
     override fun getAppId(): Int {
-        return 123456
+        return R.string.library_demo2
     }
 
     override fun getAppName(): String {
-        return "shop"
+        return ""
     }
 
     override fun getApplicationContext(): Context {

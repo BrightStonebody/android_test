@@ -1,4 +1,4 @@
-package com.demo.library_demo
+package com.demo.library_demo3
 
 class Test1 {
     val TEST_CONST = "com.demo.library_demo.Test23"

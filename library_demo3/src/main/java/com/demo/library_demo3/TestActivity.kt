@@ -1,4 +1,4 @@
-package com.demo.library_demo
+package com.demo.library_demo3
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
