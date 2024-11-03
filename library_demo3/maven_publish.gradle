@@ -1,0 +1,69 @@
+//        ./gradlew :module_name:uploadArchives
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:4.1.3"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.21"
+
+        /**
+         * see settings.gradle，会被substitute成plugin project
+         */
+        classpath "com.demo:rename-plugin:0.0.1"
+    }
+}
+
+
+apply plugin: 'maven' // 引入maven插件
+
+import com.demo.rename_plugin.RenamePlugin
+
+// 从根目录的 gradle.properties 中获取通用参数 start
+def rootProperties = new Properties()
+rootProperties.load(new FileInputStream(project.rootProject.file("gradle.properties")))
+
+def versionName = rootProperties.getProperty("VERSION_NAME")
+def pomUrl = rootProperties.getProperty("POM_URL") // ../repo
+def groupId = rootProperties.getProperty("GROUP_ID")
+// 获取通用参数 end
+
+// 从当前项目的 gradle.properties 中获取参数
+def projectProperties = new Properties()
+projectProperties.load(new FileInputStream(project.file("gradle.properties")))
+def pomArtifactId = projectProperties.getProperty("POM_ARTIFACT_ID")
+
+println("maven-publish $versionName $pomUrl $groupId $pomArtifactId")
+
+project.plugins.apply(RenamePlugin)
+project.rename_plugin {
+    packageMapping = [
+            "com/demo/library_demo3": "com/demo/rename/demo"
+    ]
+}
+
+// 编写maven的发布任务
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: uri(pomUrl)) {
+                pom.groupId = groupId
+                pom.artifactId = pomArtifactId
+                pom.version = versionName
+            }
+
+            pom.whenConfigured { pom ->
+                pom.dependencies.forEach { dep ->
+                    if (dep.getVersion() == "unspecified") {
+                        dep.setGroupId(groupId)
+                        dep.setVersion(versionName)
+                    }
+
+                }
+
+            }
+        }
+    }
+}

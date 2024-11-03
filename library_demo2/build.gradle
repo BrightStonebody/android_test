@@ -6,13 +6,13 @@ plugins {
 
 apply from:  "../ksp_spi/spi.gradle"
 
-apply plugin: "rename_plugin"
+//apply plugin: "rename_plugin"
 
-rename_plugin {
-    packageMapping = [
-            "com/demo/library_demo": "com/demo/rename/demo"
-    ]
-}
+//rename_plugin {
+//    packageMapping = [
+//            "com/demo/library_demo": "com/demo/rename/demo"
+//    ]
+//}
 
 android {
 //    namespace 'com.example.mylibrary'

@@ -34,7 +34,9 @@ android {
 dependencies {
 
     implementation project(":library_plugin")
-//    implementation project(":library_demo2")
+    implementation project(":library_demo")
+    implementation project(":library_demo2")
+    implementation project(":library_demo3")
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'com.google.android.material:material:1.5.0'
 
