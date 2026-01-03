@@ -1,0 +1,118 @@
+// ====== findDependents - 支持依赖层级（depth） + 修复漏查 ======
+import org.gradle.api.artifacts.result.ResolvedComponentResult
+import org.gradle.api.artifacts.result.DependencyResult
+import org.gradle.api.artifacts.result.ResolvedDependencyResult
+import org.gradle.api.artifacts.component.ProjectComponentIdentifier
+
+task findDependents {
+    doLast {
+        String targetModulePath = project.findProperty('target')
+        if (!targetModulePath) {
+            throw new GradleException("❌ 请通过 -Ptarget=:your:module 指定目标模块。\n" +
+                    "例如：./gradlew findDependents -Ptarget=:core:utils")
+        }
+
+        // Map<modulePath, minDepth>
+        Map<String, Integer> dependentWithDepth = new LinkedHashMap<>()
+
+        println("xxxxx ${subprojects.size()}")
+
+        // 遍历所有子项目（排除 root），这里是抹平层级的，在setting.gradle文件中的在subprojects中
+        subprojects { consumer ->
+            // 优先使用标准配置，确保 library 模块也能被检查
+            def configNames = ['compileClasspath']
+            if (consumer.plugins.hasPlugin('com.android.library') ||
+                    consumer.plugins.hasPlugin('com.android.application')) {
+                configNames = ['debugCompileClasspath', 'releaseCompileClasspath']
+            }
+
+            Integer minDepth = null
+
+            for (String configName : configNames) {
+                def config = consumer.configurations.find { it.name == configName }
+                if (config && config.canBeResolved) {
+                    try {
+                        def root = config.incoming.resolutionResult.root
+                        int depth = findDepthToTarget(root, targetModulePath, new HashSet<>(), 0)
+                        if (depth > 0) {
+                            if (minDepth == null || depth < minDepth) {
+                                minDepth = depth
+                            }
+                        }
+                    } catch (Exception e) {
+                        // ignore
+                    }
+                }
+            }
+
+            // Fallback: 如果标准配置没找到，再遍历所有可解析配置
+            if (minDepth == null) {
+                consumer.configurations.all { config ->
+                    if (config.canBeResolved && minDepth == null) {
+                        try {
+                            def root = config.incoming.resolutionResult.root
+                            int depth = findDepthToTarget(root, targetModulePath, new HashSet<>(), 0)
+                            if (depth > 0) {
+                                minDepth = depth
+                            }
+                        } catch (Exception e) {}
+                    }
+                }
+            }
+
+            if (minDepth != null) {
+                dependentWithDepth.put(consumer.path, minDepth)
+            }
+        }
+
+        // 输出结果
+        println ""
+        if (dependentWithDepth.isEmpty()) {
+            println "✅ 模块 ${targetModulePath} 未被任何模块引用。"
+        } else {
+            println "✅ 模块 ${targetModulePath} 被以下模块引用（层级 = 到目标的最短路径长度）："
+            dependentWithDepth.each { path, depth ->
+                println "  ➤ ${path} (层级: ${depth})"
+            }
+        }
+    }
+}
+
+/**
+ * DFS 查找从当前组件到目标模块的最短深度
+ * @param component 当前组件
+ * @param target 目标模块路径
+ * @param visited 已访问组件
+ * @param currentDepth 当前深度（root 为 0，其直接依赖为 1）
+ * @return >0 表示找到，值为深度；0 表示未找到
+ */
+int findDepthToTarget(ResolvedComponentResult component, String target, Set<String> visited, int currentDepth) {
+    String idStr = component.id.toString()
+    if (visited.contains(idStr)) {
+        return 0
+    }
+    visited.add(idStr)
+
+    int minFoundDepth = Integer.MAX_VALUE
+
+    for (DependencyResult dep : component.dependencies) {
+        if (dep instanceof ResolvedDependencyResult) {
+            ResolvedComponentResult child = dep.selected
+            def id = child.id
+
+            if (id instanceof ProjectComponentIdentifier && id.projectPath == target) {
+                return currentDepth + 1 // 找到目标，返回深度
+            }
+
+            // 递归子组件
+            int childDepth = findDepthToTarget(child, target, new HashSet<>(visited), currentDepth + 1)
+            if (childDepth > 0) {
+                if (childDepth < minFoundDepth) {
+                    minFoundDepth = childDepth
+                }
+            }
+        }
+    }
+
+    return minFoundDepth == Integer.MAX_VALUE ? 0 : minFoundDepth
+}

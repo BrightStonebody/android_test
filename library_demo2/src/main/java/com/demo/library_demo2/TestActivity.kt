@@ -8,6 +8,6 @@ class TestActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        R.string.library_demo
+        R.string.library_demo2
     }
 }
